@@ -64,6 +64,10 @@ class RubyTest
     current_file.split('/')[0..-current_file.split('/').reverse.index('test')-1].join('/')
   end
 
+  def test_root_dir
+    current_file.split('/')[0..-current_file.split('/').reverse.index(spec_file? ? 'spec' : 'test')-2].join('/')
+  end
+
   def spec_file?
     current_file =~ /spec_|_spec/
   end
@@ -149,13 +153,12 @@ class RubyTest
   end
 
   def send_to_vimux(test_command)
-    cmd = if VIM::evaluate("g:vimux_ruby_clear_console_on_run") != 0
-      "clear && "
-    else
-      ''
-    end
-    cmd += test_command
-    Vim.command("call VimuxRunCommand(\"#{cmd}\")")
+    cmds = []
+    cmds << "clear" if VIM::evaluate("g:vimux_ruby_clear_console_on_run") != 0
+    cmds << "cd #{test_root_dir}"
+    cmds << test_command
+
+    Vim.command("call VimuxRunCommand(\"#{cmds.join(' && ')}\")")
   end
 end
 EOF
