@@ -93,7 +93,7 @@ class RubyTest
         break
       elsif VIM::Buffer.current[line_number] =~ /should "([^"]+)"/ ||
             VIM::Buffer.current[line_number] =~ /should '([^']+)'/
-        method_name = "\"/#{Regexp.escape($1)}/\""
+            method_name = "/'#{Regexp.escape($1)}'/"
         break
       end
     end
